@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Card Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .readonly-box {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+        .disclaimer {
+            font-size: 12px;
+            color: #555;
+            margin-top: 5px;
+        }
+        .copyright {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Student Progress Card</h2>
+
+        <label for="classCode">Select Class:</label>
+        <select id="classCode" onchange="calculateAdmNumber()">
+            <option value="11A">11A</option>
+            <option value="11B">11B</option>
+            <option value="11C">11C</option>
+            <option value="12A">12A</option>
+            <option value="12B">12B</option>
+            <option value="12C">12C</option>
+        </select>
+
+        <label for="rollNumber">Enter Roll Number:</label>
+        <input type="number" id="rollNumber" placeholder="Enter your roll number" oninput="calculateAdmNumber()">
+
+        <label for="admNumber">Admission Number:</label>
+        <input type="text" id="admNumber" class="readonly-box" readonly>
+        <p class="disclaimer">
+            *There may be slight inaccuracies due to the way ID numbers are handled on the server.  
+            Check the roll number inside the progress report. If your target roll number is high or low,  
+            adjust the ID number accordingly. Cheers!
+        </p>
+
+        <button onclick="copyToClipboard()">Copy to Clipboard</button>
+        <button onclick="goToSite()">Go to Site</button>
+
+        <p class="copyright">© fx3 lxn</p>
+    </div>
+
+    <script>
+        function calculateAdmNumber() {
+            let classCode = document.getElementById("classCode").value;
+            let rollNumber = parseInt(document.getElementById("rollNumber").value);
+
+            if (isNaN(rollNumber)) {
+                document.getElementById("admNumber").value = "";
+                return;
+            }
+
+            let baseNumbers = {
+                "11A": 80912706,
+                "11B": 80912748,
+                "11C": 80912796,
+                "12A": 80912556,
+                "12B": 80912605,
+                "12C": 80912653
+            };
+
+            if (classCode === "12A") {
+                rollNumber -= 2; // Adjust roll number for 12A
+            }
+
+            let admNumber = baseNumbers[classCode] + rollNumber;
+            document.getElementById("admNumber").value = admNumber;
+        }
+
+        function copyToClipboard() {
+            let admNumber = document.getElementById("admNumber");
+            if (admNumber.value) {
+                navigator.clipboard.writeText(admNumber.value);
+                alert("Copied to clipboard: " + admNumber.value);
+            } else {
+                alert("No admission number to copy!");
+            }
+        }
+
+        function goToSite() {
+            let url = "https://dbs.careerbookerp.com/StudentApplicationForm/progresscard/DBHSSM";
+            window.open(url, "_blank");
+        }
+    </script>
+
+</body>
+</html>
